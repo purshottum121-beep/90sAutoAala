@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Bus Wala</title>
+  
+  <!-- Google Fonts: Baloo 2, Yatra One -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Yatra+One&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ───────────────────────────────────────────────────────────── 90s Bus Wala
+       The artwork carries all the colour. Everything the app draws
+       on top is neutral glass, so it sits on any background image.
+       ───────────────────────────────────────────────────────────── */
+
+    :root {
+      --logo-x: 0vw;
+      --logo-top: 13vh;
+      --logo-size: clamp(2.5rem, 8.5vw, 7rem);
+
+      --edge: clamp(1rem, 2.2vw, 1.75rem);
+      --glass: rgba(255, 255, 255, 0.1);
+      --glass-line: rgba(255, 255, 255, 0.2);
+      --shadow-glass: 0 8px 40px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      --text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+
+      --body: "Baloo 2", "Kohinoor Devanagari", "Nirmala UI", "Noto Sans Devanagari",
+        ui-rounded, system-ui, sans-serif;
+      --ui: ui-sans-serif, -apple-system, "Segoe UI Variable Text", "Segoe UI",
+        system-ui, sans-serif;
+
+      --swift: 140ms cubic-bezier(0.4, 0, 0.2, 1);
+      --glide: 320ms cubic-bezier(0.4, 0, 0.2, 1);
+      --settle: 620ms cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--body);
+      color: #fff;
+      background: #0a1416;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      overflow: hidden;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translate3d(0, 14px, 0); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @keyframes rise-left {
+      from { opacity: 0; transform: translate3d(-16px, 0, 0); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @keyframes fade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .topbar,
+    .logo,
+    .dock {
+      animation: rise var(--settle) both;
+    }
+    .topbar { animation-delay: 0.28s; }
+    .logo { animation-delay: 0.06s; }
+    .dock { animation-delay: 0.16s; }
+
+    .horns {
+      animation: rise-left var(--settle) 0.34s both;
+    }
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-color: #0a1416;
+    }
+
+    .bg__layer {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1.1s var(--ease-settle);
+    }
+
+    .bg__layer.is-active {
+      opacity: 1;
+    }
+
+    /* 10 Background Images CSS */
+    .bg__layer--1 {
+      background-image: url("https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=1600&auto=format&fit=crop");
+    }
+    .bg__layer--2 {
+      background-image: url("https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1600&auto=format&fit=crop");
+    }
+    .bg__layer--3 {
+      background-image: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1600&auto=format&fit=crop");
+    }
+    .bg__layer--4 {
+      background-image: url("https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1600&auto=format&fit=crop");
+    }
+    .bg__layer--5 {
+      background-image: url("https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1600&auto=format&fit=crop");
+    }
+    .bg__layer--6 {
+      background-image: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop");
+    }
+    .bg__layer--7 {
+      background-image: url("https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1600&auto=format&fit=crop");
+    }
+    .bg__layer--8 {
+      background-image: url("https://images.unsplash.com/photo-1426604966848-d7adac902bff?q=80&w=1600&auto=format&fit=crop");
+    }
+    .bg__layer--9 {
+      background-image: url("https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?q=80&w=1600&auto=format&fit=crop");
+    }
+    .bg__layer--10 {
+      background-image: url("https://images.unsplash.com/photo-1454496522488-7a8e488e8606?q=80&w=1600&auto=format&fit=crop");
+    }
+
+    .bg__scrim {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.28) 0%,
+        rgba(0, 0, 0, 0.06) 26%,
+        rgba(0, 0, 0, 0.1) 58%,
+        rgba(0, 0, 0, 0.48) 100%
+      );
+      pointer-events: none;
+    }
+
+    .yt-host {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    main {
+      position: relative;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: max(var(--edge), env(safe-area-inset-top)) var(--edge)
+        max(var(--edge), env(safe-area-inset-bottom));
+    }
+
+    .topbar {
+      position: fixed;
+      top: max(1.15rem, env(safe-area-inset-top));
+      left: var(--edge);
+      right: var(--edge);
+      z-index: 20;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 0.75rem;
+      text-shadow: var(--text-shadow);
+    }
+
+    .clock {
+      justify-self: start;
+      font-family: var(--ui);
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      font-variant-numeric: tabular-nums;
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .presence {
+      justify-self: center;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--ui);
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .presence__dot {
+      position: relative;
+      width: 10px;
+      height: 10px;
+      flex: none;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.9);
+    }
+
+    .presence__dot::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #4ade80;
+      opacity: 0.75;
+      animation: ping 1.9s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    .presence__count {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .presence__label {
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.62);
+    }
+
+    @keyframes ping {
+      75%, 100% {
+        transform: scale(2.2);
+        opacity: 0;
+      }
+    }
+
+    .horns {
+      position: fixed;
+      left: var(--edge);
+      top: 50%;
+      translate: 0 -50%;
+      z-index: 20;
+    }
+
+    .horn {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.28rem 0.7rem 0.28rem 0.3rem;
+      border: 1px solid var(--glass-line);
+      border-radius: 999px;
+      background: var(--glass);
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.22);
+      color: #fff;
+      font-family: var(--body);
+      cursor: pointer;
+      transition: background var(--swift), transform var(--swift),
+        border-color var(--swift);
+    }
+
+    .horn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .horn:active {
+      transform: scale(0.95);
+    }
+
+    .horn.is-blaring {
+      animation: honk 0.45s ease;
+    }
+
+    .horn__icon {
+      display: grid;
+      place-items: center;
+      width: 1.6rem;
+      height: 1.6rem;
+      flex: none;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+    }
+
+    .horn__icon svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .horn.is-blaring .horn__icon {
+      background: #fff;
+      color: #111;
+    }
+
+    .horn__text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+      text-align: left;
+    }
+
+    .horn__deva {
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .horn__en {
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: rgba(255, 255, 255, 0.62);
+    }
+
+    @keyframes honk {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-4px) rotate(-1.6deg); }
+      50% { transform: translateX(5px) rotate(1.6deg); }
+      75% { transform: translateX(-2px); }
+    }
+
+    .links {
+      justify-self: end;
+      display: flex;
+      align-items: center;
+    }
+
+    .link {
+      display: grid;
+      place-items: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      color: rgba(255, 255, 255, 0.92);
+      text-decoration: none;
+      transition: background var(--swift), transform var(--swift), color var(--swift);
+    }
+
+    .link:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+    }
+
+    .link:active {
+      transform: scale(0.95);
+    }
+
+    .logo {
+      margin: var(--logo-top) 0 0;
+      translate: var(--logo-x) 0;
+      display: flex;
+      align-items: baseline;
+      gap: 0.22em;
+      font-family: var(--body);
+      font-weight: 800;
+      font-size: var(--logo-size);
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: #fff;
+      text-align: center;
+      filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.5));
+      user-select: none;
+    }
+
+    @keyframes truck-shake {
+      0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+      8% { transform: translate3d(-4px, 2px, 0) rotate(-1.1deg); }
+      18% { transform: translate3d(4px, -2px, 0) rotate(0.9deg); }
+      28% { transform: translate3d(-3px, 1px, 0) rotate(-0.75deg); }
+      38% { transform: translate3d(3px, -1px, 0) rotate(0.6deg); }
+      50% { transform: translate3d(-2px, 1px, 0) rotate(-0.45deg); }
+      62% { transform: translate3d(2px, 0, 0) rotate(0.3deg); }
+      74% { transform: translate3d(-1px, 0, 0) rotate(-0.18deg); }
+      86% { transform: translate3d(1px, 0, 0) rotate(0.08deg); }
+      100% { transform: none; }
+    }
+
+    .logo.is-shaking .logo__line {
+      animation: truck-shake 720ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    .dock {
+      position: relative;
+      width: 100%;
+      max-width: 30rem;
+      margin-bottom: clamp(0.5rem, 7vh, 4.5rem);
+    }
+
+    .player {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.4rem 0.9rem 0.4rem 0.4rem;
+      border-radius: 999px;
+      border: 1px solid var(--glass-line);
+      background: var(--glass);
+      backdrop-filter: blur(28px) saturate(150%);
+      -webkit-backdrop-filter: blur(28px) saturate(150%);
+      box-shadow: var(--shadow-glass);
+    }
+
+    .disc {
+      position: relative;
+      width: 3.25rem;
+      height: 3.25rem;
+      flex: none;
+    }
+
+    .disc__ring {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      outline: 1px solid rgba(255, 255, 255, 0.2);
+      outline-offset: -1px;
+      background: #1a1a1a;
+      animation: spin 8s linear infinite;
+      animation-play-state: paused;
+    }
+
+    .player.is-playing .disc__ring {
+      animation-play-state: running;
+    }
+
+    .disc__art {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .disc__art.is-letterboxed {
+      transform: scale(1.35);
+    }
+
+    .disc__hub {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 0.5rem;
+      height: 0.5rem;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .meta {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .meta__title,
+    .meta__artist {
+      transition: opacity 220ms ease;
+    }
+
+    .player.is-swapping .meta__title,
+    .player.is-swapping .meta__artist {
+      opacity: 0;
+    }
+
+    .disc {
+      transition: transform var(--glide);
+    }
+
+    .player.is-playing .disc {
+      transform: scale(1.03);
+    }
+
+    .meta__title {
+      margin: 0;
+      font-weight: 700;
+      font-size: 0.84rem;
+      line-height: 1.25;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .meta__artist {
+      margin: 0;
+      font-size: 0.71rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: rgba(255, 255, 255, 0.7);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .seek {
+      position: relative;
+      height: 10px;
+      margin-top: 0.2rem;
+      cursor: pointer;
+      touch-action: none;
+    }
+
+    .seek__rail {
+      position: absolute;
+      inset-inline: 0;
+      top: 50%;
+      height: 3px;
+      transform: translateY(-50%);
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .seek__fill {
+      height: 100%;
+      width: 100%;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      transform: scaleX(0);
+      transform-origin: left center;
+      will-change: transform;
+    }
+
+    .seek__knob {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 10px;
+      height: 10px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transition: opacity var(--swift);
+      will-change: transform;
+    }
+
+    .seek:hover .seek__knob,
+    .seek:focus-visible .seek__knob {
+      opacity: 1;
+    }
+
+    .time {
+      margin-top: 0.05rem;
+      font-size: 0.62rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 0.15rem;
+      flex: none;
+    }
+
+    .btn {
+      display: grid;
+      place-items: center;
+      width: 1.8rem;
+      height: 1.8rem;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.8);
+      cursor: pointer;
+      transition: background var(--swift), color var(--swift),
+        transform var(--swift);
+    }
+
+    .btn svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    .btn:active {
+      transform: scale(0.92);
+    }
+
+    .btn--play {
+      width: 2.25rem;
+      height: 2.25rem;
+      background: #fff;
+      color: #000;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+
+    .btn--play svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .i-pause,
+    .player.is-playing .i-play {
+      display: none;
+    }
+
+    .player.is-playing .i-pause {
+      display: block;
+    }
+
+    .btn--play:hover {
+      background: #fff;
+      color: #000;
+      transform: scale(1.06);
+    }
+
+    .btn--play:disabled {
+      opacity: 0.5;
+      cursor: default;
+      transform: none;
+    }
+
+    .btn--toggle.is-on {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .list {
+      position: absolute;
+      bottom: calc(100% + 0.7rem);
+      left: 0;
+      right: 0;
+      z-index: 5;
+      max-height: min(48dvh, 24rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      border-radius: 1.35rem;
+      border: 1px solid var(--glass-line);
+      background: rgba(20, 20, 22, 0.55);
+      backdrop-filter: blur(28px) saturate(150%);
+      -webkit-backdrop-filter: blur(28px) saturate(150%);
+      box-shadow: var(--shadow-glass);
+      opacity: 0;
+      visibility: hidden;
+      transform: translate3d(0, 10px, 0) scale(0.985);
+      transform-origin: bottom center;
+      transition: opacity var(--glide), transform var(--glide),
+        visibility 0s linear 320ms;
+    }
+
+    .list.is-open {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition: opacity var(--glide), transform 420ms var(--ease-settle),
+        visibility 0s;
+    }
+
+    .list {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
+    }
+    .list::-webkit-scrollbar { width: 6px; }
+    .list::-webkit-scrollbar-track { background: transparent; }
+    .list::-webkit-scrollbar-thumb {
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.24);
+    }
+    .list::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .list ol {
+      margin: 0;
+      padding: 0.4rem;
+      list-style: none;
+      counter-reset: t;
+    }
+
+    .list li {
+      counter-increment: t;
+    }
+
+    .list button {
+      width: 100%;
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      padding: 0.45rem 0.7rem;
+      border: none;
+      border-radius: 0.7rem;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.82);
+      font-family: var(--body);
+      font-size: 0.86rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .list button::before {
+      content: counter(t);
+      flex: none;
+      width: 1.4rem;
+      font-size: 0.7rem;
+      font-variant-numeric: tabular-nums;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .list button:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .list li.is-current button {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .list .t-title {
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .list .t-artist {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.5);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bumper {
+      width: 100%;
+      margin: 0 auto 0.7rem;
+      padding: 0 0.5rem;
+      text-align: center;
+      user-select: none;
+    }
+
+    .bumper__text {
+      font-family: "Yatra One", var(--body);
+      font-size: clamp(1rem, 2.6vw, 1.28rem);
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0.015em;
+      text-align: center;
+      text-wrap: balance;
+      color: rgba(255, 255, 255, 0.8);
+      text-shadow: var(--text-shadow);
+      transition: opacity 240ms ease;
+    }
+
+    .bumper__text.is-swapping {
+      opacity: 0;
+    }
+
+    .bumper__next {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: -0.22em;
+      margin-left: 0.4em;
+      width: 1.4rem;
+      height: 1.4rem;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      transition: color var(--swift), background var(--swift),
+        rotate 420ms var(--ease-settle);
+    }
+
+    .bumper__next:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .bumper__next:active {
+      rotate: 180deg;
+    }
+
+    :focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 640px) {
+      :root { --logo-top: 16vh; }
+      .presence__label { display: none; }
+      .horn {
+        padding: 0.28rem 0.6rem 0.28rem 0.28rem;
+        gap: 0.4rem;
+      }
+      .horn__icon { width: 1.5rem; height: 1.5rem; }
+      .horn__deva { font-size: 0.72rem; }
+      .horn__en { font-size: 0.56rem; }
+      .player {
+        flex-wrap: wrap;
+        padding: 0.75rem;
+        border-radius: 1.5rem;
+        row-gap: 0.6rem;
+      }
+      .controls { width: 100%; justify-content: center; gap: 0.35rem; }
+      .disc { width: 3.75rem; height: 3.75rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .disc__ring, .presence__dot::after { animation: none !important; }
+      .player.is-playing .disc { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Layer Stack (10 Images) -->
+  <div class="bg">
+    <div class="bg__layer bg__layer--1 is-active"></div>
+    <div class="bg__layer bg__layer--2"></div>
+    <div class="bg__layer bg__layer--3"></div>
+    <div class="bg__layer bg__layer--4"></div>
+    <div class="bg__layer bg__layer--5"></div>
+    <div class="bg__layer bg__layer--6"></div>
+    <div class="bg__layer bg__layer--7"></div>
+    <div class="bg__layer bg__layer--8"></div>
+    <div class="bg__layer bg__layer--9"></div>
+    <div class="bg__layer bg__layer--10"></div>
+    <div class="bg__scrim"></div>
+  </div>
+
+  <!-- YouTube Host (Hidden 1x1 player) -->
+  <div id="yt-player" class="yt-host"></div>
+
+  <main>
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="clock" id="clock">12:00 am</div>
+      <div class="presence">
+        <span class="presence__dot"></span>
+        <span class="presence__count" id="listeners">642</span>
+        <span class="presence__label">on GT Road</span>
+      </div>
+      <div class="links">
+        <a class="link" href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+        </a>
+      </div>
+    </header>
+
+    <!-- Horn Rail -->
+    <aside class="horns">
+      <button type="button" class="horn" id="horn">
+        <span class="horn__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+        </span>
+        <span class="horn__text">
+          <span class="horn__deva">हॉर्न दीजिए</span>
+          <span class="horn__en">HORN PLEASE</span>
+        </span>
+      </button>
+    </aside>
+
+    <!-- Wordmark -->
+    <h1 class="logo" id="logo">
+      <span class="logo__line">90s Bus</span>
+      <span class="logo__line">WALA</span>
+    </h1>
+
+    <!-- Player Dock -->
+    <div class="dock">
+      <!-- Popup Playlist -->
+      <div class="list" id="list">
+        <ol id="listItems"></ol>
+      </div>
+
+      <!-- Truck Bumper Couplet -->
+      <div class="bumper">
+        <span class="bumper__text" id="bumperText">बुरी नज़र वाले तेरा मुँह काला</span>
+        <button type="button" class="bumper__next" id="bumperNext" aria-label="Next quote">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.73-5.57"></path></svg>
+        </button>
+      </div>
+
+      <!-- Main Player Controls Pill -->
+      <div class="player" id="player">
+        <div class="disc">
+          <div class="disc__ring">
+            <img class="disc__art" id="cover" src="" alt="" crossorigin="anonymous">
+          </div>
+          <div class="disc__hub"></div>
+        </div>
+
+        <div class="meta">
+          <p class="meta__title" id="title">Loading playlist...</p>
+          <p class="meta__artist" id="artist">Truck Wala</p>
+          
+          <div class="seek" id="seek" role="slider" aria-label="Seek slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+            <div class="seek__rail">
+              <div class="seek__fill" id="seekFill"></div>
+            </div>
+            <div class="seek__knob" id="seekKnob"></div>
+          </div>
+          <div class="time">
+            <span id="tCur">0:00</span> / <span id="tDur">0:00</span>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button type="button" class="btn btn--toggle is-on" id="shuffle" aria-label="Shuffle" aria-pressed="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+          </button>
+          
+          <button type="button" class="btn" id="prev" aria-label="Previous track">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="4" x2="5" y2="20"></line></svg>
+          </button>
+
+          <button type="button" class="btn btn--play" id="play" aria-label="Play" disabled>
+            <svg class="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <svg class="i-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+          </button>
+
+          <button type="button" class="btn" id="next" aria-label="Next track">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="4" x2="19" y2="20"></line></svg>
+          </button>
+
+          <button type="button" class="btn btn--toggle" id="listBtn" aria-label="Playlist" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Embedded Playlist & Logic Script -->
+  <script>
+    // Embedded 90s Hits Playlist data
+    const EMBEDDED_TRACKS = [
+      { "id": "N0jnLZxYwYc", "title": "Mujhse Mohabbat Ka Izhaar Karta", "artist": "Satrang Music Official", "album": "Mujhse Mohabbat Ka Izhaar Karta - Single", "duration": 304, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/d8/1f/fe/d81ffee2-15bd-5d17-7af0-a4794fa94547/cover.jpg/400x400bb.jpg", "rawTitle": "Mujhse Mohabbat Ka Izhaar (HD)| Hum Hain Rahi Pyar Ke (1993)| Aamir Khan| Juhi Chawla| Romantic Song" },
+      { "id": "3NWMK2MRqIk", "title": "Tumsa Koi Pyaara", "artist": "Kumar Sanu & Alka Yagnik", "album": "Khuddar (Original Motion Picture Soundtrack)", "duration": 376, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/a7/f5/c2/a7f5c2e5-d620-02de-4b50-8cc03364e246/8901854010462.jpg/400x400bb.jpg", "rawTitle": "Tumsa Koi Pyaara | Khuddar | Govinda, Karisma Kapoor | Kumar Sanu, Alka Yagnik |Anu Malik, 90s Hits" },
+      { "id": "9b0iydtDZLU", "title": "Waada Raha Sanam", "artist": "Abhijeet & Alka Yagnik", "album": "Khiladi (Original Motion Picture Soundtrack)", "duration": 365, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/a5/2e/2a/a52e2a41-be71-2aaa-a3aa-8d6154f2367b/cover.jpg/400x400bb.jpg", "rawTitle": "Waada Raha Sanam -4K | Akshay K & Ayesha J | Alka Y & Abhijeet | Khiladi | 90's Hindi Romantic Songs" },
+      { "id": "fg9G1dacXjk", "title": "Chhupana Bhi Nahin Aata", "artist": "Vinod Rathod", "album": "Baazigar (Original Motion Picture Soundtrack)", "duration": 253, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/35/29/aa/3529aae9-0f02-8c08-3fb7-2713553fcae4/cover.jpg/400x400bb.jpg", "rawTitle": "Chhupana Bhi Nahin Aata Full Video Song | Baazigar | Shahrukh Khan, Kajol | Vinod Rathod" },
+      { "id": "u0AgbGWvzdA", "title": "Jhanjharia (Male Version)", "artist": "Abhijeet", "album": "Krishna (Original Motion Picture Soundtrack)", "duration": 309, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/f4/74/56/f47456b6-f29e-b63a-faa8-1f3fef77b263/8901854010516.jpg/400x400bb.jpg", "rawTitle": "Jhanjharia Lyrical (Male) |Krishna | Suniel Shetty, Karisma Kapoor|Abhijeet Bhattacharya | Anu Malik" },
+      { "id": "jE1CavSI5TQ", "title": "Husn Hai Suhana", "artist": "Chandana Dixit & Abhijeet", "album": "Coolie No.1 (Original Motion Picture Soundtrack)", "duration": 348, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/ff/34/8e/ff348e70-7747-05ca-1a54-d8f9174066bf/8901854009442.jpg/400x400bb.jpg", "rawTitle": "Husn Hai Suhana | Coolie No. 1 | Govinda & Karisma Kapoor | Abhijeet & Chandana Dixit | 90's Hits" },
+      { "id": "wYdXuNtJkPk", "title": "Jeeye to Jeeye Kaise", "artist": "Pankaj Udhas", "album": "Saajan (Original Motion Picture Soundtrack)", "duration": 217, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/af/c9/3e/afc93e0c-08e1-cc81-f549-a5fed7b95dd0/cover.jpg/400x400bb.jpg", "rawTitle": "Jeeye To Jeeye Kaise -Lyrical | Saajan | Pankaj Udhas | Salman Khan & Madhuri | 90's Hindi Sad Songs" },
+      { "id": "cBGDDBHN22U", "title": "Pehli Pehli Baar Mohabbat Ki Hai", "artist": "Kumar Sanu & Alka Yagnik", "album": "Sirf Tum (Original Motion Picture Soundtrack)", "duration": 457, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music60/v4/cd/6f/7c/cd6f7c21-ec35-353d-7762-bdd951d1e10b/8902894606318_cover.jpg/400x400bb.jpg", "rawTitle": "Pehli Pehli Baar Mohabbat Ki Hai Full Video Song | Sirf Tum|Kumar Sanu,Alka Yagnik|Sanjay K, Priya G" },
+      { "id": "oFxbBeYhLqM", "title": "Saaton Janam Main Tere", "artist": "Kumar Sanu & Alka Yagnik", "album": "Dilwale (Original Motion Picture Soundtrack)", "duration": 362, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/6c/3b/cd/6c3bcd60-c8b5-f39f-b294-1a7c11d2f1f4/cover.jpg/400x400bb.jpg", "rawTitle": "Saaton Janam Main Tere Full Lyrical |Video Song | Dilwale | Ajay Devgan, Raveena Tandon | Kumar Sanu" },
+      { "id": "e-1xmmEb49I", "title": "To Chalun", "artist": "Roop Kumar Rathod", "album": "Border (Original Motion Picture Soundtrack)", "duration": 459, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/d7/20/98/d720985d-12f8-c7d2-73e5-5f2f16249de9/cover.jpg/400x400bb.jpg", "rawTitle": "To Chalun" },
+      { "id": "7-ORLGKcnLQ", "title": "Tumhein Dekhen Meri Aankhen", "artist": "Alka Yagnik, P. Sunanda & Kumar Sanu", "album": "Rang (Original Motion Picture Soundtrack)", "duration": 394, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/64/d3/7c/64d37cf6-4da6-6e16-6e39-cd9a5bb5e292/8901854011056.jpg/400x400bb.jpg", "rawTitle": "Tumhein Dekhen Meri Aankhen | Divya Bharti | Kumar Sanu | Alka Yagnik | Rang Song | 90's Sad Song" },
+      { "id": "tPNwGuu_rQ4", "title": "Tumhein Apna Banane Ki Kasam Khai Hai", "artist": "Anuradha Paudwal & Kumar Sanu", "album": "90'S Bollywood Duets Kumar Sanu, Anuradha Paudwal", "duration": 337, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/b8/1d/7b/b81d7b77-4bfa-59b9-74f5-def45157f386/8903431040985_cover.jpg/400x400bb.jpg", "rawTitle": "Lyrical: Tumhein Apna Banane Ki Kasam | Sadak | Kumar Sanu,Anuradha Paudwal |Sanjay Dutt,Pooja Bhatt" },
+      { "id": "dDR4oiyjUBA", "title": "Raah Mein Unse Mulaqat", "artist": "Kumar Sanu & Alka Yagnik", "album": "Vijaypath (Original Motion Picture Soundtrack)", "duration": 456, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/76/d6/62/76d66293-50b1-4cb9-f5d0-b4acb5fc52cd/8901854004560.jpg/400x400bb.jpg", "rawTitle": "Raah Mein Unse Mulaqat - Lyrical | Ajay Devgn, Tabu | Kumar Sanu, Alka Yagnik |Vijaypath | Anu Malik" },
+      { "id": "tRMzF4EVPHI", "title": "Tu Jo Hans Hans Ke", "artist": "Udit Narayan & Kavita Krishnamurthy", "album": "Old Hindi Songs", "duration": 254, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/c4/a8/14/c4a8144a-9357-5140-7d81-3071139d485c/23UMGIM77992.rgb.jpg/400x400bb.jpg", "rawTitle": "Tu Jo Hans Hans Ke HD | Govinda, Aarti Chabria |Udit Narayan, Kavita Krishnamurthy |Raja Bhaiya Song" },
+      { "id": "PqiddY3o3aY", "title": "Dil Kehta Hai", "artist": "Kumar Sanu & Alka Yagnik", "album": "Akele Hum Akele Tum (Original Motion Picture Soundtrack)", "duration": 403, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/88/5b/ac/885baca2-62b6-7624-da86-4226fed6c2bf/cover.jpg/400x400bb.jpg", "rawTitle": "Dil Kehta Hai | Akele Hum Akele Tum | Kumar Sanu, Alka Yagnik | Aamir Khan | 90s Love Song" },
+      { "id": "Jtg2zyS_y_c", "title": "Ae Kash Ke Hum", "artist": "Jatin-Lalit & Kumar Sanu", "album": "Kabhi Haan Kabhi Naa (Original Motion Picture Soundtrack)", "duration": 296, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e6/d6/0a/e6d60a7a-e6ee-6824-7e04-8739f0aa9f4e/5099749530828.jpg/400x400bb.jpg", "rawTitle": "Ae Kash Ke Hum Full Video - Kabhi Haan Kabhi Naa | Shah Rukh Khan, Suchitra | Kumar Sanu" },
+      { "id": "lFdSi01tpYM", "title": "Sochenge Tumhe Pyar", "artist": "Kumar Sanu", "album": "Deewana (Original Motion Picture Soundtrack)", "duration": 390, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/c8/0a/fd/c80afd7e-c03a-21be-a733-d5e3f3de746f/cover.jpg/400x400bb.jpg", "rawTitle": "Sochenge Tumhe Pyar- Lyrical | #Deewana | #RishiKapoor, Divya Bharti | 90's Best Song" },
+      { "id": "i1IsLVz6T9Q", "title": "Kumar Sanu & Sadhana Sargam Live Sydney", "artist": "Chintan Ramola", "album": "", "duration": 179, "cover": "https://i.ytimg.com/vi/i1IsLVz6T9Q/hqdefault.jpg", "rawTitle": "Kumar Sanu & Sadhana Sargam Live Sydney - Teri umeed tera intezar - Deewana" },
+      { "id": "bga_0ziOOfQ", "title": "Woh Meri Neend Mera Chain", "artist": "Sadhana Sargam", "album": "Hum Hain Rahi Pyar Ke (Original Motion Picture Soundtrack)", "duration": 297, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/04/51/79/0451791d-9be5-85b1-601e-835f45efc6af/8901854010080.jpg/400x400bb.jpg", "rawTitle": "Woh Meri Neend Mera Chain Lyrical - Hum Hain Rahi Pyar Ke | Aamir Khan, Juhi Chawla | Sadhana Sargam" },
+      { "id": "g3ddCx2Uawo", "title": "Dil Hai Ki Manta Nahin", "artist": "Anuradha Paudwal & Kumar Sanu", "album": "Dil Hai Ke Manta Nahin (Original Motion Picture Soundtrack)", "duration": 371, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/6d/9f/97/6d9f97f2-d285-93d8-6f47-8edd0b17b173/8902894105880_cover.jpg/400x400bb.jpg", "rawTitle": "Dil Hai Ki Manta Nahin Full Audio Song (Female Version) | Anuradha Paudwal | Aamir Khan, Pooja Bhatt" },
+      { "id": "QjqKXFGM3eI", "title": "Chori Chori Dil Tera", "artist": "Kumar Sanu & Sujata Goswamy", "album": "Phool Aur Angaar (Original Motion Picture Soundtrack)", "duration": 413, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/ee/01/81/ee0181b3-d51c-8346-51c0-0bee1e99b547/8905574861496.jpg/400x400bb.jpg", "rawTitle": "Chori Chori Dil Tera (HD) - Kumar Sanu Songs - Romantic Songs - 90's Love Song" },
+      { "id": "Y-o8NQ8Y36A", "title": "Is Tarah Aashiqui Ka", "artist": "Kumar Sanu", "album": "Imtihan (Original Motion Picture Soundtrack)", "duration": 469, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/89/d7/35/89d735a0-bdf2-44d9-e017-1535376e51d2/8901854006458.jpg/400x400bb.jpg", "rawTitle": "Is Tarah Aashiqui Ka Lyrical | Imtihan | Kumar Sanu | Saif Ali Khan, Raveena Tandon | Anu Malik" },
+      { "id": "qGOTe3KmCdY", "title": "Kitna Haseen Chehra", "artist": "Kumar Sanu", "album": "Bollywood Best Trio - Kumar Sanu, Nadeem - Shravan", "duration": 365, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/4c/e4/30/4ce43035-5178-40e5-0557-a3ddf252199a/cover.jpg/400x400bb.jpg", "rawTitle": "Kitna Haseen Chehra Full Lyrical Video Song | Dilwale | Ajay Devgan, Raveena Tandon | Kumar Sanu" },
+      { "id": "9f6GhUb-WdM", "title": "Dil Cheer Ke Dekh", "artist": "Kumar Sanu", "album": "Rang (Original Motion Picture Soundtrack)", "duration": 287, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/64/d3/7c/64d37cf6-4da6-6e16-6e39-cd9a5bb5e292/8901854011056.jpg/400x400bb.jpg", "rawTitle": "Dil Cheer Ke Dekh | Divya Bharti | Kamal Sadanah | Kumar Sanu | Rang Movie | 90's Romantic Song" },
+      { "id": "E4HtYArLiwc", "title": "Pucho Zara Pucho", "artist": "Alka Yagnik & Kumar Sanu", "album": "Raja Hindustani (Original Motion Picture Soundtrack)", "duration": 460, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/66/eb/c5/66ebc542-d478-fe57-a29f-a399f8f674ab/8901854008629.jpg/400x400bb.jpg", "rawTitle": "Pucho Zara Pucho | Aamir Khan,Karisma Kapoor | Alka Yagnik,Kumar Sanu | Raja Hindustani | 90's Hit" },
+      { "id": "d5ZrSe1eDDU", "title": "Woh Ladki Bahut Yaad Aati Hai (Lo Fi Remix)", "artist": "Kumar Sanu & Alka Yagnik", "album": "Best Of Bollywood LO-FI Songs (LO-FI Remix)", "duration": 450, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/d4/a4/fa/d4a4fa3e-220b-c165-c515-1a510fe08332/cover.jpg/400x400bb.jpg", "rawTitle": "Woh Ladki Bahut Yaad Aati Hai - Kumar Sanu | Qayamat | Best Hindi Song" },
+      { "id": "1jjDs69WWUQ", "title": "Lal Dupatta", "artist": "Kanchan Nagar & Raju Punjabi", "album": "Lal Dupatta - Single", "duration": 299, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/25/9f/3d/259f3d06-cc8f-f593-1a06-519d36669562/199538550429.jpg/400x400bb.jpg", "rawTitle": "Lal Dupatta Full Song | Mujhse Shaadi Karogi | Salman Khan,Priyanka Chopra |Alka Yagnik,Udit Narayan" },
+      { "id": "PlN6oP-Nlno", "title": "Sona Kitna Sona Hai", "artist": "Udit Narayan & Poornima", "album": "Hero No. 1 (Original Motion Picture Soundtrack)", "duration": 279, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/69/1d/9d/691d9d96-a79f-09c3-9c7b-2b1821af5718/8901854009985.jpg/400x400bb.jpg", "rawTitle": "Sona Kitna Sona Hai | Govinda, Karisma Kapoor | Udit N & Poornima | Hero No.1 | 90's Hits" },
+      { "id": "SF_cCyz6QQg", "title": "Humko Deewana Kar Gaye", "artist": "Sonu Nigam & Tulsi Kumar", "album": "Humko Deewana Kar Gaye (Original Motion Picture Soundtrack)", "duration": 383, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music20/v4/57/28/7e/57287e9e-6e95-fb20-8f30-f3cd3573faae/8902894120722_cover.jpg/400x400bb.jpg", "rawTitle": "Humko Deewana Kar Gaye [Full Song] Humko Deewana Kar Gaye" },
+      { "id": "_YjSmLlmqLM", "title": "Aisi Deewangi", "artist": "Alka Yagnik & Vinod Rathod", "album": "Deewana (Original Motion Picture Soundtrack)", "duration": 446, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/c8/0a/fd/c80afd7e-c03a-21be-a733-d5e3f3de746f/cover.jpg/400x400bb.jpg", "rawTitle": "Aisi Deewangi - Lyrical Video | Deewana | Shahrukh Khan | Divya Bharti | Ishtar Music" },
+      { "id": "eVnG_Rqfgg4", "title": "Neele Neele Ambar Par", "artist": "Kalyanji-Anandji & Kishore Kumar", "album": "MasterWorks - Kishore Kumar", "duration": 235, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music62/v4/9a/b5/29/9ab529af-8d90-e11b-10ff-ec10949ba0bb/886446012964.jpg/400x400bb.jpg", "rawTitle": "Neele Neele Ambar Par - Male Version Lyric Video - Kalaakaar | Sridevi | Kishore Kumar" },
+      { "id": "mW4WRtL6GxM", "title": "Is Pyar Se Meri Taraf Na Dekho (Male Version)", "artist": "Kumar Sanu", "album": "Chamatkar", "duration": 310, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/96/fa/87/96fa87b2-65e5-5fc1-1c8a-bff155e06bee/8901854009336.jpg/400x400bb.jpg", "rawTitle": "Is Pyar Se Meri Taraf Na Dekho - Lyrical | Sharukh K, Urmila M | Alka Y, Kumar S | Chamatkar Movie" },
+      { "id": "uIOrAkrjwp4", "title": "Hum Yaar Hai Tumhare", "artist": "Udit Narayan & Alka Yagnik", "album": "Haan Maine Bhi Pyaar Kiya (Original Motion Picture Soundtrack)", "duration": 431, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/22/9c/fa/229cfae1-2121-bf0c-c72e-4756c321451d/8901854006410.jpg/400x400bb.jpg", "rawTitle": "Hum Yaar Hai Tumhare | Alka Yagnik | Udit Narayan | Haan Maine Bhi Pyaar Kiya (2002)" },
+      { "id": "5y_TCKNzAMI", "title": "Tumse Milne Ko Dil Karta Hai", "artist": "Vik4s M", "album": "Tumse Milne Ko Dil Karta Hai - Single", "duration": 279, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/e7/a3/a6/e7a3a68d-9cd9-63aa-1201-7d75f7b970fe/7300349313063.jpg/400x400bb.jpg", "rawTitle": "Tumse Milne Ko Dil Karta Hai ❤️🎶 | Phool Aur Kaante | Ajay Devgn & Madhoo | Kumar Sanu, Alka Yagnik" },
+      { "id": "cBwl6qKrZd0", "title": "Ab Tere Dil Mein To", "artist": "Kumar Sanu & Alka Yagnik", "album": "Aarzoo (Original Motion Picture Soundtrack)", "duration": 505, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/c4/46/5a/c4465a14-e2a9-5c3a-6941-61e776f18c0b/191773221508.jpg/400x400bb.jpg", "rawTitle": "Ab Tere Dil Mein To - Kumar Sanu & Alka - Aarzoo" },
+      { "id": "BaAoZA0fup0", "title": "Dil Ka Aalam", "artist": "Kumar Sanu", "album": "Aashiqui (Original Motion Picture Soundtrack)", "duration": 255, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/0a/3a/df/0a3adfc7-66f2-b2a8-df6e-850a09cd4a1e/8902894684088_cover.jpg/400x400bb.jpg", "rawTitle": "Dil Ka Aalam (Full Song) | Aashiqui | Kumar Sanu | T-Series" },
+      { "id": "nNhv8A_rJTg", "title": "Oye Raju Pyar Na Kariyo", "artist": "Amjad Ali", "album": "QAWALI-E-ISHQ (Vol.3) Ek Dilruba Hai Woh Bewafa Hai", "duration": 353, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/1e/bf/f0/1ebff044-5643-b85e-cad8-12e325b4ce0f/artwork.jpg/400x400bb.jpg", "rawTitle": "Oye Raju Pyar Na Kariyo Lyrical Video |Hadh Kar Di Aapne|Anand Bakshi|Anand Raj Anand|Govinda,Rani M" },
+      { "id": "s1NLjpj3aP4", "title": "Jaa Bewafa Jaa", "artist": "Altaf Raja", "album": "Voice of Romance - Altaf Raja", "duration": 269, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/a2/01/0b/a2010bc7-591a-e991-b592-1b7d95007fab/cover.jpg/400x400bb.jpg", "rawTitle": "Jaa Bewafa Jaa Full Video Song - Altaf Raja | Best 90's Hindi Song" },
+      { "id": "u4NSsEIny1c", "title": "Muje Pine ka Shauk Nahi", "artist": "Bolly HD Songs", "album": "", "duration": 287, "cover": "https://i.ytimg.com/vi/u4NSsEIny1c/hqdefault.jpg", "rawTitle": "Muje Pine ka Shauk Nahi - Coolie (1983) Full VIdeo Song *HD*" },
+      { "id": "RjJxWRFfG3s", "title": "Nahin Yeh Ho Nahin Sakta", "artist": "Kumar Sanu & Sadhana Sargam", "album": "BOBBY DEOL ALL TIME HITS", "duration": 382, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/0c/e8/3f/0ce83f8d-1fd1-f968-fcc5-ff9c974fd5fa/8901854096251.jpg/400x400bb.jpg", "rawTitle": "Nahin Yeh Ho Nahin Sakta -Lyrical | Bobby Deol, Twinkle Khanna | Kumar Sanu, Sadhana Sargam| Barsaat" },
+      { "id": "rrzSZ0NMID4", "title": "Barsaat Ke Mausam Mein", "artist": "Kumar Sanu & Roop Kumar Rathod", "album": "Naajayaz (Original Motion Picture Soundtrack)", "duration": 326, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/fd/db/f2/fddbf2c4-ccb5-94eb-293e-df79060e0fa8/8901854010769.jpg/400x400bb.jpg", "rawTitle": "Barsaat Ke Mausam Mein | Naajayaz | Naseeruddin Shah | Kumar Sanu | Roop Kumar Rathod" },
+      { "id": "1ziaNhD9xqE", "title": "Meri Mehbooba", "artist": "Kumar Sanu & Alka Yagnik", "album": "Pardes (Original Motion Picture Soundtrack)", "duration": 449, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/f0/86/e0/f086e0b3-4b4c-f513-afd3-6e6ae9f6715e/8901854004386.jpg/400x400bb.jpg", "rawTitle": "Meri Mehbooba Lyrical - Pardes | Shahrukh Khan & Mahima | Kumar Sanu & Alka Yagnik | Shahrukh Hits" },
+      { "id": "UCsW7nea7sI", "title": "Ae Mere Humsafar", "artist": "Alka Yagnik & Udit Narayan", "album": "Qayamat Se Qayamat Tak (Original Motion Picture Soundtrack)", "duration": 402, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/97/38/6b/97386bc1-46b7-0c82-d28e-1621c7001c03/8902894873307_cover.jpg/400x400bb.jpg", "rawTitle": "Ae Mere Humsafar - 4K Video | Shah Rukh Khan & Shilpa Shetty | Baazigar | 90's Hindi Romantic Song" },
+      { "id": "5dWbn_qER3s", "title": "Tere Dar Par Sanam (Male Version)", "artist": "Kumar Sanu", "album": "Phir Teri Kahani Yaad Aayee (Original Motion Picture Soundtrack)", "duration": 389, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/ef/2c/59/ef2c5936-c83e-fed2-2321-dd06d16dccb7/8901854008643.jpg/400x400bb.jpg", "rawTitle": "Tere Dar Par Sanam - Male Version - Phir Teri Kahani Yaad Aayee | Kumar Sanu | Rahul Roy" },
+      { "id": "HIr_kpG4Fnc", "title": "Tumse Milne Ki Tamanna Hai", "artist": "Hemantkumar Mahale", "album": "", "duration": 347, "cover": "https://i.ytimg.com/vi/HIr_kpG4Fnc/hqdefault.jpg", "rawTitle": "S. P. Balasubrahmanyam sings Tumse Milne Ki Tamanna Hai - तुमसे मिलने की तमन्ना from Saajan (1991)" },
+      { "id": "XR7qvTgQ19o", "title": "Taaron Ka Chamakta Hum Tumhare Hain Sanam", "artist": "T-Series", "album": "", "duration": 361, "cover": "https://i.ytimg.com/vi/XR7qvTgQ19o/hqdefault.jpg", "rawTitle": "Taaron Ka Chamakta [Full Song] Hum Tumhare Hain Sanam" },
+      { "id": "jEL02Nz7Dds", "title": "Dono Hi Mohabbat Ke", "artist": "Altaf Raja", "album": "Tum To Thehre Pardesi", "duration": 535, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/87/5f/ca/875fcaaa-d6e0-932f-a9da-4a492a8f893e/cover.jpg/400x400bb.jpg", "rawTitle": "Dono Hi Mohabbat Ke Full Video Song | Altaf Raja | Best Hindi Romantic Songs | Hindi Album Songs" },
+      { "id": "mocKoIhNJxk", "title": "Ding Dong Dole", "artist": "KuTuB", "album": "Ding Dong Dole - Single", "duration": 403, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/4a/9b/ff/4a9bff84-9b05-d481-b278-5ef5de6e322c/195375079420.png/400x400bb.jpg", "rawTitle": "Ding Dong Dole Lyrical Video | Kucch To Hai | K K, Sunidhi Chauhan | Tushar Kapoor, Natassha" },
+      { "id": "Tx7YCSTJC6I", "title": "Dheere Dheere Tere Bina", "artist": "T-Series", "album": "", "duration": 272, "cover": "https://i.ytimg.com/vi/Tx7YCSTJC6I/hqdefault.jpg", "rawTitle": "Dheere Dheere [Full Song] Tere Bina" },
+      { "id": "jD3SGW0NHY0", "title": "Kumar Sanu 90's Hits", "artist": "Shemaroo Filmi Gaane", "album": "", "duration": 373, "cover": "https://i.ytimg.com/vi/jD3SGW0NHY0/hqdefault.jpg", "rawTitle": "Kumar Sanu 90's Hits | Chand Se Parda Kijiye | Aao Pyar Karen [1994] | Saif Ali Khan & Shilpa Shetty" },
+      { "id": "0A2ue4lNMzo", "title": "Wafa Na Raas Aayee Tujhe O Harjaee", "artist": "Nitin Mukesh", "album": "Heartbroken Records", "duration": 366, "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/49/24/0a/49240a1f-219a-82d3-fa93-3cd6d36eb08d/8903431717023_cover.jpg/400x400bb.jpg", "rawTitle": "Wafa Na Raas Aayee Tujhe O Harjaee Full Video | Bewafa Sanam | Krishan Kumar | Nitin Mukesh" },
+      { "id": "s4slgbuwOfw", "title": "O Dil Tod Ke Hansti Ho Mera Remix", "artist": "Pop Chartbusters", "album": "", "duration": 280, "cover": "https://i.ytimg.com/vi/s4slgbuwOfw/hqdefault.jpg", "rawTitle": "O Dil Tod Ke Hansti Ho Mera Remix Video Song | Bewafa Sanam | Kishan Kumar | Udit Narayan" }
+    ];
+
+    const $ = (id) => document.getElementById(id);
+    const el = {
+      player: $('player'), cover: $('cover'), title: $('title'), artist: $('artist'),
+      seek: $('seek'), seekFill: $('seekFill'), seekKnob: $('seekKnob'),
+      tCur: $('tCur'), tDur: $('tDur'), play: $('play'), prev: $('prev'),
+      next: $('next'), shuffle: $('shuffle'), listBtn: $('listBtn'),
+      list: $('list'), listItems: $('listItems'), clock: $('clock'),
+      listeners: $('listeners'), bumperText: $('bumperText'), bumperNext: $('bumperNext'),
+      horn: $('horn'), logo: document.querySelector('.logo'),
+    }; 
+
+    const state = {
+      tracks: EMBEDDED_TRACKS,
+      order: [], pos: 0, shuffle: true, ready: false, playing: false, started: false, scrubbing: false,
+    }; 
+
+    let yt = null;
+
+    const fmt = (s) => {
+      if (!Number.isFinite(s) || s < 0) s = 0;
+      return `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+    };
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function buildOrder() {
+      const seq = Array.from({ length: state.tracks.length }, (_, i) => i);
+      return state.shuffle ? shuffleArray(seq) : seq;
+    }
+
+    const currentTrack = () => state.tracks[state.order[state.pos]];
+
+    let swapTimer = null;
+    function renderTrack() {
+      const t = currentTrack();
+      if (!t) return;
+      if (el.title.dataset.rendered) {
+        el.player.classList.add('is-swapping');
+        clearTimeout(swapTimer);
+        swapTimer = setTimeout(() => el.player.classList.remove('is-swapping'), 40);
+      }
+      el.title.dataset.rendered = '1';
+      el.title.textContent = t.title;
+      el.artist.textContent = t.artist || t.rawTitle || '';
+      el.cover.src = t.cover || '';
+      el.cover.alt = `${t.title} artwork`;
+      el.cover.classList.toggle('is-letterboxed', (t.cover || '').includes('ytimg.com'));
+
+      if (state.started) document.title = `${t.title} — Truck Wala`;
+      [...el.listItems.children].forEach((li, i) => li.classList.toggle('is-current', i === state.pos));
+      const active = el.listItems.children[state.pos];
+      if (active && el.list.classList.contains('is-open')) {
+        active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+
+    function renderList() {
+      el.listItems.innerHTML = '';
+      state.order.forEach((trackIdx, i) => {
+        const t = state.tracks[trackIdx];
+        const li = document.createElement('li');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        const title = document.createElement('span');
+        title.className = 't-title';
+        title.textContent = t.title;
+        const artist = document.createElement('span');
+        artist.className = 't-artist';
+        artist.textContent = t.artist || '';
+        btn.append(title, artist);
+        btn.addEventListener('click', () => go(i));
+        li.append(btn);
+        el.listItems.append(li);
+      });
+    }
+
+    const bgLayers = [...document.querySelectorAll('.bg__layer')];
+    let bgIndex = 0;
+
+    function rotateBackground(to) {
+      if (bgLayers.length === 0) return;
+      const n = bgLayers.length;
+      bgIndex = (((to ?? bgIndex + 1) % n) + n) % n;
+      bgLayers.forEach((layer, i) => layer.classList.toggle('is-active', i === bgIndex));
+    }
+
+    function renderPlaying(on) {
+      state.playing = on;
+      el.player.classList.toggle('is-playing', on);
+      el.play.setAttribute('aria-label', on ? 'Pause' : 'Play');
+    }
+
+    function go(newPos) {
+      const n = state.order.length;
+      state.pos = ((newPos % n) + n) % n;
+      renderTrack();
+      rotateBackground(); // गाना बदलते ही अगली बैकग्राउंड इमेज आ जाएगी
+      if (!yt) return;
+      state.started = true;
+      yt.loadVideoById(currentTrack().id);
+    }
+
+    function toggle() {
+      if (!yt || !state.ready) return;
+      if (state.playing) {
+        yt.pauseVideo();
+      } else {
+        state.started = true;
+        yt.playVideo();
+      }
+    }
+
+    const poll = { at: 0, time: 0, duration: 0 };
+    let lastSecond = -1;
+    let lastDuration = -1;
+
+    function samplePlayer() {
+      if (!yt || typeof yt.getCurrentTime !== 'function') return;
+      poll.time = yt.getCurrentTime() || 0;
+      poll.duration = yt.getDuration() || 0;
+      poll.at = performance.now();
+    }
+
+    function paintProgress() {
+      requestAnimationFrame(paintProgress);
+      if (!yt || state.scrubbing || !poll.duration) return;
+      const drift = state.playing ? (performance.now() - poll.at) / 1000 : 0;
+      const cur = Math.min(poll.duration, poll.time + drift);
+      const frac = Math.min(1, Math.max(0, cur / poll.duration));
+      el.seekFill.style.transform = `scaleX(${frac})`;
+      el.seekKnob.style.transform = `translate(-50%, -50%) translateX(${frac * el.seek.clientWidth}px)`;
+
+      const second = Math.floor(cur);
+      if (second !== lastSecond) {
+        lastSecond = second;
+        el.tCur.textContent = fmt(cur);
+        el.seek.setAttribute('aria-valuenow', String(Math.round(frac * 100)));
+      }
+      if (poll.duration !== lastDuration) {
+        lastDuration = poll.duration;
+        el.tDur.textContent = fmt(poll.duration);
+      }
+    }
+
+    function fractionFromEvent(e) {
+      const r = el.seek.getBoundingClientRect();
+      return Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+    }
+
+    function previewSeek(frac) {
+      el.seekFill.style.transform = `scaleX(${frac})`;
+      el.seekKnob.style.transform = `translate(-50%, -50%) translateX(${frac * el.seek.clientWidth}px)`;
+      if (yt && typeof yt.getDuration === 'function') {
+        el.tCur.textContent = fmt((yt.getDuration() || 0) * frac);
+      }
+    }
+
+    el.seek.addEventListener('pointerdown', (e) => {
+      if (!yt) return;
+      state.scrubbing = true;
+      el.seek.setPointerCapture(e.pointerId);
+      previewSeek(fractionFromEvent(e));
+    });
+    el.seek.addEventListener('pointermove', (e) => {
+      if (state.scrubbing) previewSeek(fractionFromEvent(e));
+    });
+    el.seek.addEventListener('pointerup', (e) => {
+      if (!state.scrubbing) return;
+      state.scrubbing = false;
+      el.seek.releasePointerCapture(e.pointerId);
+      const dur = yt?.getDuration?.() || 0;
+      if (dur) yt.seekTo(dur * fractionFromEvent(e), true);
+      samplePlayer();
+    });
+
+    el.play.addEventListener('click', toggle);
+    el.prev.addEventListener('click', () => {
+      if (yt && (yt.getCurrentTime() || 0) > 3) yt.seekTo(0, true);
+      else go(state.pos - 1);
+    });
+    el.next.addEventListener('click', () => go(state.pos + 1));
+    
+    el.shuffle.addEventListener('click', () => {
+      const keep = currentTrack();
+      state.shuffle = !state.shuffle;
+      el.shuffle.classList.toggle('is-on', state.shuffle);
+      el.shuffle.setAttribute('aria-pressed', String(state.shuffle));
+      state.order = buildOrder();
+      state.pos = Math.max(0, state.order.indexOf(state.tracks.indexOf(keep)));
+      renderList();
+      renderTrack();
+    });
+
+    el.listBtn.addEventListener('click', () => {
+      const open = !el.list.classList.contains('is-open');
+      el.list.classList.toggle('is-open', open);
+      el.listBtn.classList.toggle('is-on', open);
+      el.listBtn.setAttribute('aria-expanded', String(open));
+      if (open) {
+        el.listItems.children[state.pos]?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.target.matches('input, textarea, [contenteditable]')) return;
+      if (e.key === ' ' || e.key === 'k') {
+        e.preventDefault();
+        toggle();
+      } else if (e.key === 'n' || e.key === 'ArrowRight') {
+        if (e.target !== el.seek) go(state.pos + 1);
+      } else if (e.key === 'p' || e.key === 'ArrowLeft') {
+        if (e.target !== el.seek) go(state.pos - 1);
+      } else if (e.key === 'h') {
+        honk();
+      }
+    });
+
+    let audioCtx = null;
+    try {
+      if (navigator.audioSession) navigator.audioSession.type = 'playback';
+    } catch {}
+
+    function ensureAudio() {
+      try {
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
+      } catch {
+        return null;
+      }
+    }
+
+    function primeAudio() {
+      ensureAudio();
+    }
+    ['pointerdown', 'keydown'].forEach((evt) => document.addEventListener(evt, primeAudio, { once: true, capture: true }));
+
+    let duckTimer = null;
+    let duckedFrom = null;
+    function duckMusic(ms) {
+      if (!yt || typeof yt.getVolume !== 'function') return;
+      if (duckedFrom === null) duckedFrom = yt.getVolume();
+      yt.setVolume(Math.round(duckedFrom * 0.4));
+      clearTimeout(duckTimer);
+      duckTimer = setTimeout(() => {
+        if (duckedFrom !== null) yt.setVolume(duckedFrom);
+        duckedFrom = null;
+      }, ms + 120);
+    }
+
+    async function honk() {
+      const ctx = ensureAudio();
+      if (!ctx) return;
+      
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(320, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(160, ctx.currentTime + 0.35);
+      
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+      
+      osc.connect(gain).connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.4);
+
+      duckMusic(400);
+
+      [
+        [el.horn, 'is-blaring', 450],
+        [el.logo, 'is-shaking', 720],
+      ].forEach(([node, cls, ms]) => {
+        if (!node) return;
+        node.classList.remove(cls);
+        void node.offsetWidth;
+        node.classList.add(cls);
+        setTimeout(() => node.classList.remove(cls), ms);
+      });
+    }
+
+    el.horn.addEventListener('click', honk);
+
+    const BUMPER_LINES = [
+      'बुरी नज़र वाले तेरा मुँह काला', 'देखो मगर प्यार से', 'ओके टाटा, फिर मिलेंगे', 
+      'मेरा भारत महान', 'जय माता दी', 'रब राखा', 'साइड प्लीज़', 'हॉर्न दो, राह लो', 
+      'चलती का नाम गाड़ी', 'जो डर गया, समझो मर गया', 'दिल्ली अभी दूर है'
+    ];
+    let bumperOrder = [];
+    let bumperPos = 0;
+    let bumperTimer = null;
+
+    function shuffleLines() {
+      bumperOrder = shuffleArray(BUMPER_LINES.map((_, i) => i));
+    }
+
+    function nextBumper() {
+      bumperPos += 1;
+      if (bumperPos >= bumperOrder.length) {
+        shuffleLines();
+        bumperPos = 0;
+      }
+      el.bumperText.classList.add('is-swapping');
+      setTimeout(() => {
+        el.bumperText.textContent = BUMPER_LINES[bumperOrder[bumperPos]];
+        el.bumperText.classList.remove('is-swapping');
+      }, 250);
+      clearInterval(bumperTimer);
+      bumperTimer = setInterval(nextBumper, 12000);
+    }
+    shuffleLines();
+    el.bumperText.textContent = BUMPER_LINES[bumperOrder[0]];
+    bumperTimer = setInterval(nextBumper, 12000);
+    el.bumperNext.addEventListener('click', nextBumper);
+
+    function tickClock() {
+      el.clock.textContent = new Date()
+        .toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+        .toLowerCase();
+    }
+    tickClock();
+    setInterval(tickClock, 15000);
+
+    (function driftListeners() {
+      const MIN = 500;
+      const MAX = 800;
+      let count = MIN + Math.floor(Math.random() * (MAX - MIN));
+      el.listeners.textContent = String(count);
+      const step = () => {
+        const midpoint = (MIN + MAX) / 2;
+        const up = Math.random() < (count < midpoint ? 0.58 : 0.42);
+        count = Math.max(MIN, Math.min(MAX, count + (up ? 1 : -1) * (1 + Math.floor(Math.random() * 4))));
+        el.listeners.textContent = String(count);
+        setTimeout(step, 2500 + Math.random() * 3500);
+      };
+      setTimeout(step, 2000);
+    })();
+
+    function preferAudio() {
+      try { yt?.setPlaybackQuality?.('tiny'); } catch {}
+    }
+
+    window.onYouTubeIframeAPIReady = () => {
+      yt = new YT.Player('yt-player', {
+        height: '1', width: '1',
+        videoId: currentTrack().id,
+        playerVars: { playsinline: 1, controls: 0, disablekb: 1, modestbranding: 1, rel: 0 },
+        events: {
+          onReady: () => {
+            state.ready = true;
+            el.play.disabled = false;
+            preferAudio();
+          },
+          onStateChange: (e) => {
+            const S = YT.PlayerState;
+            if (e.data === S.PLAYING) {
+              renderPlaying(true);
+              preferAudio();
+            } else if (e.data === S.PAUSED || e.data === S.BUFFERING) {
+              renderPlaying(e.data === S.BUFFERING && state.playing);
+            } else if (e.data === S.ENDED) {
+              go(state.pos + 1);
+            }
+          },
+          onError: () => {
+            if (state.started) go(state.pos + 1);
+          },
+        },
+      });
+      setInterval(samplePlayer, 250);
+      requestAnimationFrame(paintProgress);
+    };
+
+    (function init() {
+      if (!state.tracks.length) {
+        el.title.textContent = 'No tracks found';
+        return;
+      }
+      state.order = buildOrder();
+      renderList();
+      renderTrack();
+      rotateBackground(0);
+
+      const s = document.createElement('script');
+      s.src = 'https://www.youtube.com/iframe_api';
+      document.head.append(s);
+    })();
+  </script>
+</body>
+</html>
